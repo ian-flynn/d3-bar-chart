@@ -9,35 +9,50 @@
     <script type = "text/javascript" src="https://d3js.org/d3.v7.min.js"></script>
 </head>
 <body>
-    <script src="https://cdn.freecodecamp.org/testable-projects-fcc/v1/bundle.js"></script>
-    <div id="container">
-        <h1 id='title'>US GDP</h1>
-        <div class="graph-box"></div>
-    </div>
 
 
 
-    <script>
-        var width=800;
-        var height=600;
-        var padding=50;
+
+<script>
+    const req = new XMLHttpRequest();
+    req.open("GET",'https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/master/GDP-data.json',true);
+    req.send();
+    req.onload = function(){
+    const json = JSON.parse(req.responseText);
+    };
+    var width=800,
+        height=600,
+        padding=10,
+        scaleFactor=20,
+        barWidth=30,
+        barGap=2;
+    var dataset = [
+        ["1947-01-01",243.1],
+        ["1947-04-01",246.3],
+        ["1947-07-01",250.1],
+        ["1947-10-01",260.3],
+        ["1948-01-01",266.2],
+        ["1948-04-01",272.9],
+        ["1948-07-01",279.5],
+        ["1948-10-01",280.7]];
+
+
+    const svg = d3.select("body")
+            .append("svg")
+            .attr("width", width)
+            .attr("height", height);
+
+    svg.selectAll("rect")
+       .data(dataset)
+       .enter()
+       .append('rect')
+       .attr("x", (d, i) => i*(barWidth+barGap))
+       .attr("y", (d)=> height - d[1])
+       .attr("width", barWidth)
+       .attr("height", height);
 
 
 
-        var graphBox = d3.select('.graph-box')
-                        .append('svg')
-                        .attr('width', width)
-                        .attr('height', height);
-
-        fetch('https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/master/GDP-data.json')
-            .then((response) => response.json())
-            .then((data) => {
-            
-
-
-
-                
-            });
-    </script>
+</script>
 </body>
 </html>
