@@ -20,12 +20,24 @@
     <script>
         var width=800;
         var height=600;
+        var padding=50;
+
+
 
         var graphBox = d3.select('.graph-box')
                         .append('svg')
                         .attr('width', width)
                         .attr('height', height);
 
+        fetch('https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/master/GDP-data.json')
+            .then((response) => response.json())
+            .then((data) => {
+            
+
+
+
+                
+            });
     </script>
 </body>
 </html>
