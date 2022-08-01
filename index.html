@@ -4,11 +4,28 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <script src="./index.js"></script>
+    <title>US GDP</title>
     <link rel="stylesheet" href="./index.css">
+    <script type = "text/javascript" src="https://d3js.org/d3.v7.min.js"></script>
 </head>
 <body>
     <script src="https://cdn.freecodecamp.org/testable-projects-fcc/v1/bundle.js"></script>
+    <div id="container">
+        <h1 id='title'>US GDP</h1>
+        <div class="graph-box"></div>
+    </div>
+
+
+
+    <script>
+        var width=800;
+        var height=600;
+
+        var graphBox = d3.select('.graph-box')
+                        .append('svg')
+                        .attr('width', width)
+                        .attr('height', height);
+
+    </script>
 </body>
 </html>

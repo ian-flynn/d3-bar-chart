@@ -1,3 +1,7 @@
 body {
     background-color: aqua;
+    text-align: center;
+}
+.graph-box {
+    background-color: white;
 }
