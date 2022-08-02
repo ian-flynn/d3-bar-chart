@@ -19,10 +19,7 @@
     var width=1000,
         height=600,
         padding=10,
-        barWidth=2,
         barGap=1;
-
-    const scale = d3.scaleLinear();
 
     const svg = d3.select("body")
             .append("svg")
@@ -32,21 +29,18 @@
 
     d3.json('https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/master/GDP-data.json')
         .then((datas)=>{
+            var GDP = datas.data.map((item)=>item[1]);
+            var barWidth = (width/GDP.length);
             var linearScale = d3.scaleLinear()
-                                .domain([0, 18064.7])
+                                .domain([0, d3.max(GDP)])
                                 .range([0, height]);
-            var GDPList = datas.data.map((item)=>item[1])
-                                    .map((item)=>linearScale(item))    
-
+            var GDPList = GDP.map((item)=>linearScale(item));
             console.log(GDPList);
-
-
-
             svg.selectAll('rect')
                 .data(GDPList)
                 .enter()
                 .append('rect')
-                .attr("x", (d, i) => i*(barWidth+barGap))
+                .attr("x", (d, i) => i*barWidth)
                 .attr("y", (d)=> height - d)
                 .attr("width", barWidth)
                 .attr("height", (d)=>d);
