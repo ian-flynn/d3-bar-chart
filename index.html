@@ -30,29 +30,59 @@
 
     d3.json('https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/master/GDP-data.json')
         .then((datas)=>{
-            var GDP = datas.data.map((item)=>item[1]);
-            var linearScale = d3.scaleLinear()
+            const GDP = datas.data.map((item)=>item[1]);
+            const barWidth = (width/GDP.length);
+
+            const linearScale = d3.scaleLinear()
                                 .domain([0, d3.max(GDP)])
                                 .range([0, height]);
-            var barWidth = (width/GDP.length);
-            var GDPList = GDP.map((item)=>linearScale(item));
-            console.log(GDPList);
+
+            const yScale = d3.scaleLinear()
+                                 .domain([0,d3.max(GDP)])
+                                 .range([height, 0]);
+            const yAxis = d3.axisLeft(yScale);
+
+            
+
+            //  date axis at bottom
+            const yearsList = datas.data.map((item)=>{
+                return new Date(item[0])});
+            const xMax = new Date(d3.max(yearsList));
+
+            const xScale = d3.scaleTime()
+                             .domain([d3.min(yearsList), d3.max(yearsList)])
+                             .range([0, width]);
+            const xAxis = d3.axisBottom(xScale);
+
+
+
+
+            console.log(xMax);
+            console.log(yearsList);
+            // var GDPList = GDP.map((item)=>linearScale(item));
+            
 
             svg.selectAll('rect')
-                .data(GDPList)
+                .data(GDP)
                 .enter()
                 .append('rect')
+                // width needs to be scaled with padding accounted for top and bottom
                 .attr("x", (d, i) => i*barWidth)
-                .attr("y", (d)=> height - d)
+                .attr("y", (d)=> yScale(d))
                 .attr("width", barWidth - barGap)
+                //height of bar needs to be scaled with padding for top and bottom
                 .attr("height", (d)=>d);
 
-            const yAxis = d3.axisLeft(linearScale);
 
             svg.append('g')
-                .attr('transform', 'translate(40, 0)')
-                .call(yAxis);
+                .attr('transform', 'translate('+(padding)+', 0)')
+                .call(yAxis)
+                .attr('id', 'y-axis');
 
+            svg.append('g')
+                .attr('transform', 'translate(0,'+(height - padding)+ ')')
+                .call(xAxis)
+                .attr('id', 'x-axis');
 
                 
         })
