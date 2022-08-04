@@ -3,7 +3,7 @@
     padding: 0;
     /* background-color: aquamarine; */
 }
-/* .bar {
+.bar {
     display: inline-block;
     background-color: blue;
 }
@@ -11,15 +11,16 @@
     width: 100%;
     height: 100%;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
+    padding-top: 150px;
 
 }
-/* #container{
-    background-color: antiquewhite;
-    height: 600px;
-    width: 800px;
-} */
+#container{
+    text-align: center;
+}
 svg{
     background-color: pink;
+    padding: 20px;
 }

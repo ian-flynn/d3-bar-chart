@@ -9,8 +9,8 @@
     <script type = "text/javascript" src="https://d3js.org/d3.v7.min.js"></script>
 </head>
 <body>
-    <div>
-        <div>
+    <div id="main">
+        <div id="container">
             <div id="title">GDP</div>
             <div id="graph-box"></div>
         </div>
@@ -21,7 +21,7 @@
         padding=10,
         barGap=1;
 
-    const svg = d3.select("body")
+    const svg = d3.select("#graph-box")
             .append("svg")
             .attr("width", width)
             .attr("height", height);
@@ -30,37 +30,23 @@
     d3.json('https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/master/GDP-data.json')
         .then((datas)=>{
             var GDP = datas.data.map((item)=>item[1]);
-            var barWidth = (width/GDP.length);
             var linearScale = d3.scaleLinear()
                                 .domain([0, d3.max(GDP)])
                                 .range([0, height]);
+            var barWidth = (width/GDP.length);
             var GDPList = GDP.map((item)=>linearScale(item));
             console.log(GDPList);
+
             svg.selectAll('rect')
                 .data(GDPList)
                 .enter()
                 .append('rect')
                 .attr("x", (d, i) => i*barWidth)
                 .attr("y", (d)=> height - d)
-                .attr("width", barWidth)
+                .attr("width", barWidth - barGap)
                 .attr("height", (d)=>d);
         })
 
 </script>
 </body>
 </html>
-
-<!-- 
-var GDP = data.data.map(function (item) {
-    return item[1];
-  });
-
-  var scaledGDP = [];
-
-  var gdpMax = d3.max(GDP);
-
-  var linearScale = d3.scaleLinear().domain([0, gdpMax]).range([0, height]);
-
-  scaledGDP = GDP.map(function (item) {
-    return linearScale(item);
-  }); -->
