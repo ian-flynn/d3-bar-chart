@@ -9,6 +9,7 @@
     <script type = "text/javascript" src="https://d3js.org/d3.v7.min.js"></script>
 </head>
 <body>
+    <script src="https://cdn.freecodecamp.org/testable-projects-fcc/v1/bundle.js"></script>
     <div id="main">
         <div id="container">
             <div id="title">GDP</div>
@@ -16,9 +17,9 @@
         </div>
     </div>
 <script>
-    var width=1000,
-        height=600,
-        padding=10,
+    var width=1200,
+        height=800,
+        padding=80,
         barGap=1;
 
     const svg = d3.select("#graph-box")
@@ -45,8 +46,16 @@
                 .attr("y", (d)=> height - d)
                 .attr("width", barWidth - barGap)
                 .attr("height", (d)=>d);
-        })
 
+            const yAxis = d3.axisLeft(linearScale);
+
+            svg.append('g')
+                .attr('transform', 'translate(40, 0)')
+                .call(yAxis);
+
+
+                
+        })
 </script>
 </body>
 </html>
