@@ -31,17 +31,16 @@
     d3.json('https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/master/GDP-data.json')
         .then((datas)=>{
             const GDP = datas.data.map((item)=>item[1]);
-            const barWidth = (width/GDP.length);
+            const barWidth = ((width-(2*padding))/GDP.length);
 
-            const linearScale = d3.scaleLinear()
-                                .domain([0, d3.max(GDP)])
-                                .range([0, height]);
+            // const linearScale = d3.scaleLinear()
+            //                     .domain([0, d3.max(GDP)])
+            //                     .range([padding, height - padding]);
 
             const yScale = d3.scaleLinear()
                                  .domain([0,d3.max(GDP)])
-                                 .range([height, 0]);
+                                 .range([(height-padding), padding]);
             const yAxis = d3.axisLeft(yScale);
-
             
 
             //  date axis at bottom
@@ -51,15 +50,8 @@
 
             const xScale = d3.scaleTime()
                              .domain([d3.min(yearsList), d3.max(yearsList)])
-                             .range([0, width]);
+                             .range([padding, width-padding]);
             const xAxis = d3.axisBottom(xScale);
-
-
-
-
-            console.log(xMax);
-            console.log(yearsList);
-            // var GDPList = GDP.map((item)=>linearScale(item));
             
 
             svg.selectAll('rect')
@@ -67,13 +59,13 @@
                 .enter()
                 .append('rect')
                 // width needs to be scaled with padding accounted for top and bottom
-                .attr("x", (d, i) => i*barWidth)
+                .attr("x", (d, i) => (i*barWidth) + padding)
                 .attr("y", (d)=> yScale(d))
                 .attr("width", barWidth - barGap)
                 //height of bar needs to be scaled with padding for top and bottom
-                .attr("height", (d)=>d);
-
-
+                .attr("height", (d)=> (d))
+                .attr('class', 'bar');
+                
             svg.append('g')
                 .attr('transform', 'translate('+(padding)+', 0)')
                 .call(yAxis)
