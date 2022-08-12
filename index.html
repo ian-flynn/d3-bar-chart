@@ -27,15 +27,22 @@
             .attr("width", width)
             .attr("height", height);
 
+    const tooltip = d3.select("#graph-box")
+                        .append("div")
+                        .attr('class','tooltip')
+                        .style("position", "absolute")
+                        .style("visibility", "hidden")
+                        .text("YO Dawg1!");
+
 
     d3.json('https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/master/GDP-data.json')
         .then((datas)=>{
             const GDP = datas.data.map((item)=>item[1]);
             const barWidth = ((width-(2*padding))/GDP.length);
 
-            // const linearScale = d3.scaleLinear()
-            //                     .domain([0, d3.max(GDP)])
-            //                     .range([padding, height - padding]);
+            const linearScale = d3.scaleLinear()
+                                .domain([0, d3.max(GDP)])
+                                .range([padding, height - padding]);
 
             const yScale = d3.scaleLinear()
                                  .domain([0,d3.max(GDP)])
@@ -52,6 +59,10 @@
                              .domain([d3.min(yearsList), d3.max(yearsList)])
                              .range([padding, width-padding]);
             const xAxis = d3.axisBottom(xScale);
+            const heightScale = d3.scaleLinear()
+                                 .domain([0,d3.max(GDP)])
+                                 .range([0,height]);
+            
             
 
             svg.selectAll('rect')
@@ -63,8 +74,19 @@
                 .attr("y", (d)=> yScale(d))
                 .attr("width", barWidth - barGap)
                 //height of bar needs to be scaled with padding for top and bottom
-                .attr("height", (d)=> (d))
-                .attr('class', 'bar');
+                .attr("height", (d)=> heightScale(d))
+                .attr('class', 'bar')
+                .attr('data-date', (d,i)=>datas.data[i][0])
+                .attr('data-gdp', (d,i)=>datas.data[i][1]);
+
+
+
+                
+                d3.select(".bar")
+                    .on("mouseover", function(){return tooltip.style("visibility", "visible");})
+                    .on("mousemove", function(){return tooltip.style("top", (event.pageY-800)+"px").style("left",(event.pageX-800)+"px");})
+                    .on("mouseout", function(){return tooltip.style("visibility", "hidden");});
+
                 
             svg.append('g')
                 .attr('transform', 'translate('+(padding)+', 0)')
