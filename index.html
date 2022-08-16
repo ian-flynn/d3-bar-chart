@@ -11,29 +11,23 @@
 <body>
     <script src="https://cdn.freecodecamp.org/testable-projects-fcc/v1/bundle.js"></script>
     <div id="main">
-        <div id="container">
-            <div id="title">GDP</div>
-            <div id="graph-box"></div>
-        </div>
+            <div id="title">US GDP</div>
+            <div id="svgBox"></div>
     </div>
 <script>
     var width=1200,
         height=800,
         padding=80,
         barGap=1;
+    var tooltip = d3.select('#svgBox')
+                    .append('div')
+                    .attr('id', 'tooltip')
+                    .style('opacity', 0);
 
-    const svg = d3.select("#graph-box")
+    const svg = d3.select("#svgBox")
             .append("svg")
             .attr("width", width)
             .attr("height", height);
-
-    const tooltip = d3.select("#graph-box")
-                        .append("div")
-                        .attr('class','tooltip')
-                        .style("position", "absolute")
-                        .style("visibility", "hidden")
-                        .text("YO Dawg1!");
-
 
     d3.json('https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/master/GDP-data.json')
         .then((datas)=>{
@@ -49,10 +43,9 @@
                                  .range([(height-padding), padding]);
             const yAxis = d3.axisLeft(yScale);
             
-
-            //  date axis at bottom
             const yearsList = datas.data.map((item)=>{
                 return new Date(item[0])});
+
             const xMax = new Date(d3.max(yearsList));
 
             const xScale = d3.scaleTime()
@@ -62,8 +55,6 @@
             const heightScale = d3.scaleLinear()
                                  .domain([0,d3.max(GDP)])
                                  .range([0,height]);
-            
-            
 
             svg.selectAll('rect')
                 .data(GDP)
@@ -76,17 +67,29 @@
                 //height of bar needs to be scaled with padding for top and bottom
                 .attr("height", (d)=> heightScale(d))
                 .attr('class', 'bar')
-                .attr('data-date', (d,i)=>datas.data[i][0])
-                .attr('data-gdp', (d,i)=>datas.data[i][1]);
-
+                
+                .attr('data-gdp', (d,i)=>datas.data[i][1])
+                .attr('data-date', (d,i)=> datas.data[i][0])
+                .attr('index', (d, i) => i)
+                .on('mouseover', function (event, d) {
+                    // d or datum is the height of the
+                    // current rect
+                    var i = this.getAttribute('index');
+                    tooltip.transition().duration(200).style('opacity', 0.9);
+                    tooltip
+                    .html('sup'
+                    )
+                    .attr('data-date', datas.data[i][0])
+                    .style('left', i * barWidth + 30 + 'px')
+                    .style('top', height - 100 + 'px')
+                    .style('transform', 'translateX(60px)');
+                })
+                .on('mouseout', function () {
+                    tooltip.transition().duration(200).style('opacity', 0);
+                });
 
 
                 
-                d3.select(".bar")
-                    .on("mouseover", function(){return tooltip.style("visibility", "visible");})
-                    .on("mousemove", function(){return tooltip.style("top", (event.pageY-800)+"px").style("left",(event.pageX-800)+"px");})
-                    .on("mouseout", function(){return tooltip.style("visibility", "hidden");});
-
                 
             svg.append('g')
                 .attr('transform', 'translate('+(padding)+', 0)')
@@ -98,7 +101,6 @@
                 .call(xAxis)
                 .attr('id', 'x-axis');
 
-                
         })
 </script>
 </body>
