@@ -32,15 +32,23 @@
     d3.json('https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/master/GDP-data.json')
         .then((datas)=>{
             const GDP = datas.data.map((item)=>item[1]);
+
+// 
+            var scaledGDP = [];
+            const gdpMax = d3.max(GDP);
+            var linearScale = d3.scaleLinear()
+                        .domain([0, gdpMax])
+                        .range([padding, height - padding]);
+
+            scaledGDP = GDP.map((item) => linearScale(item));
+
+//
             const barWidth = ((width-(2*padding))/GDP.length);
 
-            const linearScale = d3.scaleLinear()
-                                .domain([0, d3.max(GDP)])
-                                .range([padding, height - padding]);
-
             const yScale = d3.scaleLinear()
-                                 .domain([0,d3.max(GDP)])
-                                 .range([(height-padding), padding]);
+                             .domain([0,d3.max(GDP)])
+                             .range([height - padding, padding]);
+
             const yAxis = d3.axisLeft(yScale);
             
             const yearsList = datas.data.map((item)=>{
@@ -51,33 +59,36 @@
             const xScale = d3.scaleTime()
                              .domain([d3.min(yearsList), d3.max(yearsList)])
                              .range([padding, width-padding]);
+
             const xAxis = d3.axisBottom(xScale);
             const heightScale = d3.scaleLinear()
                                  .domain([0,d3.max(GDP)])
-                                 .range([0,height]);
+                                 .range([0, height]);
 
+// Bars
             svg.selectAll('rect')
-                .data(GDP)
+                .data(scaledGDP)
                 .enter()
                 .append('rect')
                 // width needs to be scaled with padding accounted for top and bottom
                 .attr("x", (d, i) => (i*barWidth) + padding)
-                .attr("y", (d)=> yScale(d))
+                .attr("y", (d)=> height - d)
                 .attr("width", barWidth - barGap)
                 //height of bar needs to be scaled with padding for top and bottom
-                .attr("height", (d)=> heightScale(d))
+                .attr("height", (d)=> d)
                 .attr('class', 'bar')
                 
                 .attr('data-gdp', (d,i)=>datas.data[i][1])
                 .attr('data-date', (d,i)=> datas.data[i][0])
                 .attr('index', (d, i) => i)
+
+
+
                 .on('mouseover', function (event, d) {
-                    // d or datum is the height of the
-                    // current rect
                     var i = this.getAttribute('index');
                     tooltip.transition().duration(200).style('opacity', 0.9);
                     tooltip
-                    .html('sup'
+                    .html(this.getAttribute('data-gdp')
                     )
                     .attr('data-date', datas.data[i][0])
                     .style('left', i * barWidth + 30 + 'px')
@@ -87,20 +98,16 @@
                 .on('mouseout', function () {
                     tooltip.transition().duration(200).style('opacity', 0);
                 });
-
-
-                
-                
+// Left Axis
             svg.append('g')
                 .attr('transform', 'translate('+(padding)+', 0)')
                 .call(yAxis)
                 .attr('id', 'y-axis');
-
+//  Bottom Axis
             svg.append('g')
                 .attr('transform', 'translate(0,'+(height - padding)+ ')')
                 .call(xAxis)
                 .attr('id', 'x-axis');
-
         })
 </script>
 </body>
