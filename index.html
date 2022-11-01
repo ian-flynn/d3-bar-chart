@@ -75,7 +75,7 @@
                 .attr("y", (d)=> height - d)
                 .attr("width", barWidth - barGap)
                 //height of bar needs to be scaled with padding for top and bottom
-                .attr("height", (d)=> d)
+                .attr("height", (d)=> d - padding)
                 .attr('class', 'bar')
                 
                 .attr('data-gdp', (d,i)=>datas.data[i][1])
