@@ -11,104 +11,97 @@
 <body>
     <script src="https://cdn.freecodecamp.org/testable-projects-fcc/v1/bundle.js"></script>
     <div id="main">
-            <div id="title">US GDP</div>
-            <div id="svgBox"></div>
+        <div id="svgBox"></div>
     </div>
-<script>
-    var width=1200,
-        height=800,
-        padding=80,
-        barGap=1;
-    var tooltip = d3.select('#svgBox')
-                    .append('div')
-                    .attr('id', 'tooltip')
-                    .style('opacity', 0);
+    <script>
+        var width=1200,
+            height=800,
+            padding=80,
+            barGap=1;
+        var tooltip = d3.select('#svgBox')
+                        .append('div')
+                        .attr('id', 'tooltip')
+                        .style('opacity', 0);
 
-    const svg = d3.select("#svgBox")
-            .append("svg")
-            .attr("width", width)
-            .attr("height", height);
+        const svg = d3.select("#svgBox")
+                .append("svg")
+                .attr("width", width)
+                .attr("height", height);
 
-    d3.json('https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/master/GDP-data.json')
-        .then((datas)=>{
-            const GDP = datas.data.map((item)=>item[1]);
+        d3.json('https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/master/GDP-data.json')
+            .then((datas)=>{
+                // TITLE 
+                svg.append('text')
+                    // .attr('transform', 'rotate(-90)')
+                    .attr('x', 240)
+                    .attr('y', 80)
+                    .text('US Gross Domestic Product')
+                    .style('font-size', 30)
+                    .attr('id', 'title')
 
-// 
-            var scaledGDP = [];
-            const gdpMax = d3.max(GDP);
-            var linearScale = d3.scaleLinear()
-                        .domain([0, gdpMax])
-                        .range([padding, height - padding]);
 
-            scaledGDP = GDP.map((item) => linearScale(item));
-
-//
-            const barWidth = ((width-(2*padding))/GDP.length);
-
-            const yScale = d3.scaleLinear()
-                             .domain([0,d3.max(GDP)])
-                             .range([height - padding, padding]);
-
-            const yAxis = d3.axisLeft(yScale);
-            
-            const yearsList = datas.data.map((item)=>{
-                return new Date(item[0])});
-
-            const xMax = new Date(d3.max(yearsList));
-
-            const xScale = d3.scaleTime()
-                             .domain([d3.min(yearsList), d3.max(yearsList)])
-                             .range([padding, width-padding]);
-
-            const xAxis = d3.axisBottom(xScale);
-            const heightScale = d3.scaleLinear()
-                                 .domain([0,d3.max(GDP)])
-                                 .range([0, height]);
-
-// Bars
-            svg.selectAll('rect')
-                .data(scaledGDP)
-                .enter()
-                .append('rect')
-                // width needs to be scaled with padding accounted for top and bottom
-                .attr("x", (d, i) => (i*barWidth) + padding)
-                .attr("y", (d)=> height - d)
-                .attr("width", barWidth - barGap)
-                //height of bar needs to be scaled with padding for top and bottom
-                .attr("height", (d)=> d - padding)
-                .attr('class', 'bar')
+                const GDP = datas.data.map((item)=>item[1]);
+                // Y-AXIS
+                const gdpMax = d3.max(GDP);
+                var linearScale = d3.scaleLinear()
+                            .domain([0, gdpMax])
+                            .range([padding, height - padding]);
+                const scaledGDP = GDP.map((item) => linearScale(item));
+                const yAxis = d3.axisLeft(d3.scaleLinear()
+                                            .domain([0, gdpMax])
+                                            .range([height - padding, padding]));
                 
-                .attr('data-gdp', (d,i)=>datas.data[i][1])
-                .attr('data-date', (d,i)=> datas.data[i][0])
-                .attr('index', (d, i) => i)
+                svg.append('g')
+                    .attr('transform', 'translate('+(padding)+', 0)')
+                    .call(yAxis)
+                    .attr('id', 'y-axis')
+                    .style('font-size', '15')
 
+                // X-AXIS
+                const barWidth = ((width-(2*padding))/GDP.length);
+                const yearsList = datas.data.map((item)=>{
+                    return new Date(item[0])});
+                const xScale = d3.scaleTime()
+                                .domain([d3.min(yearsList), d3.max(yearsList)])
+                                .range([padding, width-padding]);
+                const xAxis = d3.axisBottom(xScale);
 
+                svg.append('g')
+                    .attr('transform', 'translate(0,'+(height - padding)+ ')')
+                    .call(xAxis)
+                    .attr('id', 'x-axis')
+                    .style('font-size', '15');
 
-                .on('mouseover', function (event, d) {
-                    var i = this.getAttribute('index');
-                    tooltip.transition().duration(200).style('opacity', 0.9);
-                    tooltip
-                    .html(this.getAttribute('data-gdp')
-                    )
-                    .attr('data-date', datas.data[i][0])
-                    .style('left', i * barWidth + 30 + 'px')
-                    .style('top', height - 100 + 'px')
-                    .style('transform', 'translateX(60px)');
-                })
-                .on('mouseout', function () {
-                    tooltip.transition().duration(200).style('opacity', 0);
-                });
-// Left Axis
-            svg.append('g')
-                .attr('transform', 'translate('+(padding)+', 0)')
-                .call(yAxis)
-                .attr('id', 'y-axis');
-//  Bottom Axis
-            svg.append('g')
-                .attr('transform', 'translate(0,'+(height - padding)+ ')')
-                .call(xAxis)
-                .attr('id', 'x-axis');
-        })
-</script>
+                // BARS
+                svg.selectAll('rect')
+                    .data(scaledGDP)
+                    .enter()
+                    .append('rect')
+                    .attr("x", (d, i) => (i*barWidth) + padding)
+                    .attr("y", (d)=> height - d)
+                    .attr("width", barWidth - barGap)
+                    .attr("height", (d)=> d - padding)
+                    .attr('class', 'bar')
+                    .attr('data-gdp', (d,i)=>datas.data[i][1])
+                    .attr('data-date', (d,i)=> datas.data[i][0])
+                    .attr('index', (d, i) => i)
+                    .attr('fill', '#5c715e')
+                    .on('mouseover', function (event, d) {
+                        var i = this.getAttribute('index');
+                        tooltip.transition().duration(200).style('opacity', 0.9);
+                        tooltip
+                        .html(this.getAttribute('data-gdp')
+                        )
+                        .attr('data-date', datas.data[i][0])
+                        .style('left', i * barWidth + 30 + 'px')
+                        .style('top', height - 100 + 'px')
+                        .style('transform', 'translateX(60px)');
+                    })
+                    .on('mouseout', function () {
+                        tooltip.transition().duration(200).style('opacity', 0);
+                    });
+                
+            })
+    </script>
 </body>
 </html>
