@@ -21,12 +21,11 @@ body {
 svg{
     background-color: #ddeedf;
     box-shadow: #5c715e 0px 7px 29px 0px;
-
 }
 .bar:hover{
     fill: #b6cdbd;
 }
-.tooltip {
+#tooltip {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -36,8 +35,6 @@ svg{
     height: 50px;
     padding: 2px;
     font: 12px;
-    background: lightsteelblue;
-    box-shadow: 1px 1px 10px;
-    border-radius: 2px;
-    pointer-events: none;
+    background: #f2f9f1;
+    box-shadow:#5c715e 1px 1px 10px;
 }
