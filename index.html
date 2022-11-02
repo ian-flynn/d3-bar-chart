@@ -95,7 +95,7 @@
                 // TOOLTIPS
                     .on('mouseover', function (event, d) {
                         var i = this.getAttribute('index');
-                        tooltip.transition().duration(200).style('opacity', 0.9);
+                        tooltip.transition().duration(200).style('opacity', 1);
                         tooltip
                         .html(quarterDates[i] + '<br>' + ' $' + this.getAttribute('data-gdp') + ' Billion')
                         .attr('data-date', datas.data[i][0])
