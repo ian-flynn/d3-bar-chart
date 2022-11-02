@@ -100,8 +100,7 @@
                         .html(quarterDates[i] + '<br>' + ' $' + this.getAttribute('data-gdp') + ' Billion')
                         .attr('data-date', datas.data[i][0])
                         .style('left', 350 + 'px')
-                        .style('top', 350 + 'px')
-                        .style('transform', 'translateX(60px)');
+                        .style('top', 350 + 'px');
                     })
                     .on('mouseout', function () {
                         tooltip.transition().duration(1000).style('opacity', 0);
