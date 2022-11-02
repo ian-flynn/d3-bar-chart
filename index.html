@@ -69,7 +69,14 @@
                     .call(xAxis)
                     .attr('id', 'x-axis')
                     .style('font-size', '15');
-
+                // TOOLTIP DATE FORMATTING
+                const quarterDates = datas.data.map((item) => {
+                    const quarter = item[0].substring(5, 7) === '01' ? 'Q1'
+                                  : item[0].substring(5, 7) === '04' ? 'Q2'
+                                  : item[0].substring(5, 7) === '07' ? 'Q3'
+                                  : 'Q4'
+                    return (quarter + ' ' + item[0].substring(0,4))
+                });
                 // BARS
                 svg.selectAll('rect')
                     .data(scaledGDP)
@@ -90,14 +97,14 @@
                         var i = this.getAttribute('index');
                         tooltip.transition().duration(200).style('opacity', 0.9);
                         tooltip
-                        .html(datas.data[i][0] + '<br>' + ' $' + this.getAttribute('data-gdp') + ' Billion')
+                        .html(quarterDates[i] + '<br>' + ' $' + this.getAttribute('data-gdp') + ' Billion')
                         .attr('data-date', datas.data[i][0])
                         .style('left', 350 + 'px')
                         .style('top', 350 + 'px')
                         .style('transform', 'translateX(60px)');
                     })
                     .on('mouseout', function () {
-                        tooltip.transition().duration(600).style('opacity', 0);
+                        tooltip.transition().duration(1000).style('opacity', 0);
                     });
             })
     </script>
