@@ -41,14 +41,9 @@
 
                 // Y-AXIS
                 const gdpMax = d3.max(GDP);
-                var linearScale = d3.scaleLinear()
-                            .domain([0, gdpMax])
-                            .range([padding, height - padding]);
-                const scaledGDP = GDP.map((item) => linearScale(item));
                 const yAxis = d3.axisLeft(d3.scaleLinear()
                                             .domain([0, gdpMax])
                                             .range([height - padding, padding]));
-                
                 svg.append('g')
                     .attr('transform', 'translate('+(padding)+', 0)')
                     .call(yAxis)
@@ -69,6 +64,7 @@
                     .call(xAxis)
                     .attr('id', 'x-axis')
                     .style('font-size', '15');
+
                 // TOOLTIP DATE FORMATTING
                 const quarterDates = datas.data.map((item) => {
                     const quarter = item[0].substring(5, 7) === '01' ? 'Q1'
@@ -78,6 +74,11 @@
                     return (quarter + ' ' + item[0].substring(0,4))
                 });
                 // BARS
+                var linearScale = d3.scaleLinear()
+                            .domain([0, gdpMax])
+                            .range([padding, height - padding]);
+                const scaledGDP = GDP.map((item) => linearScale(item));
+                
                 svg.selectAll('rect')
                     .data(scaledGDP)
                     .enter()
